@@ -1,19 +1,23 @@
 # 📰 Online News Portal
 
-![Java](https://img.shields.io/badge/Java-17-blue)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.2-green)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)
-![Scrum](https://img.shields.io/badge/Agile-Scrum-yellow)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen)
+![MySQL](https://img.shields.io/badge/Database-MySQL-blue)
+![Status](https://img.shields.io/badge/Sprint-In_Progress-yellow)
 
-An **Online News Portal** built with **Java Spring Boot** where authors/editors can publish articles, readers can browse and search content, and admins can manage users, analytics, and advertisements.  
-The project follows the **Scrum Agile methodology** using **GitHub Projects** for sprint planning and task tracking.
+---
+
+## 📋 Overview
+
+**Online News Portal** is a full-featured web application built using **Java**, **Spring Boot**, **Hibernate**, and **MySQL**. It allows users to read, publish, and manage news articles with role-based access. The platform supports image uploads, advertising management, analytics, and a responsive frontend.
+
+The project follows the **Scrum** methodology and is managed using **GitHub Projects** for backlog, sprint tracking, and issue management.
 
 ---
 
 ## 🧭 Table of Contents
 
-- [Features](#features)
+- [Features & Roadmap](#features)
 - [Functional Requirements](#functional-requirements)
 - [Non-Functional Requirements](#non-functional-requirements)
 - [Advertising Feature](#advertising-feature)
@@ -23,20 +27,78 @@ The project follows the **Scrum Agile methodology** using **GitHub Projects** fo
 - [Usage](#usage)
 - [License](#license)
 
+## ⚙️ Tech Stack
+
+* **Backend:** Spring Boot, Hibernate, Spring Security
+* **Frontend:** React (planned for later version)
+* **Database:** MySQL
+* **Build Tool:** Maven
+* **Version Control:** Git & GitHub
+* **Project Management:** GitHub Projects (Scrum workflow)
+
 ---
 
-## 🚀 Features
+## 🚀 Features & Version Roadmap
 
-- User registration, login/logout, and password reset.
-- Role-based access control: **Reader**, **Author/Editor**, **Admin**.
-- Article management: create, edit, delete, draft/publish, schedule publishing.
-- Categorization and tagging of articles.
-- Article listing with pagination, search, and filtering.
-- Image upload and embedding within articles.
-- Advertising management for banners and promotions.
-- Responsive UI for both desktop and mobile.
-- Logging and analytics for article views and actions.
-- Secure authentication and input validation.
+### 🟡 **V.0.0 – Content Management (In Progress)**
+
+* Article management: create, edit, delete, draft/publish, schedule publishing.
+* Categorization and tagging of articles.
+* Article listing with pagination, search, and filtering.
+* Image upload and embedding within articles.
+
+---
+
+### 🟢 **V.0.1 – Advertising Management**
+
+* Advertising management for banners and promotions.
+
+---
+
+### 🔵 **V.0.2 – Report Generation**
+
+* Logging and analytics for article views and actions.
+* Secure authentication and input validation.
+
+---
+
+### 🟣 **V.0.3 – Frontend Development**
+
+* Responsive UI for both desktop and mobile.
+
+---
+
+### 🔴 **V.0.4 – Security (Authentication & Authorization)**
+
+* User registration, login/logout, and password reset.
+* Role-based access control: **Reader**, **Author/Editor**, **Admin**.
+
+---
+
+## 🧩 Scrum Workflow
+
+### Sprint Planning
+
+* Each version (`V.0.x`) represents a **sprint**.
+* Tasks are managed via **GitHub Projects** under columns:
+
+  * **To Do** → **In Progress** → **In Review** → **Done**
+
+### Daily Work
+
+* Use **Issues** for task tracking.
+* Link commits and pull requests to issues using:
+
+  ```bash
+  git commit -m "Implement article scheduling #12"
+  ```
+
+  (where `#12` is the issue number)
+
+### Sprint Review & Retrospective
+
+* Conduct reviews at the end of each version (sprint).
+* Update README and backlog for the next version.
 
 ---
 
@@ -213,3 +275,4 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 * Being Developed with ❤️ using Java, Spring Boot, and Agile principles.*
 
 ```
+
