@@ -40,7 +40,7 @@ The project follows the **Scrum** methodology and is managed using **GitHub Proj
 
 ## 🚀 Features & Version Roadmap
 
-### 🟡 **V.0.0 – Content Management (In Progress)**
+### 🟡 **V.0.1 – Content Management (In Progress)**
 
 * Article management: create, edit, delete, draft/publish, schedule publishing.
 * Categorization and tagging of articles.
@@ -49,26 +49,26 @@ The project follows the **Scrum** methodology and is managed using **GitHub Proj
 
 ---
 
-### 🟢 **V.0.1 – Advertising Management**
+### 🟢 **V.0.2 – Advertising Management**
 
 * Advertising management for banners and promotions.
 
 ---
 
-### 🔵 **V.0.2 – Report Generation**
+### 🔵 **V.0.3 – Report Generation**
 
 * Logging and analytics for article views and actions.
 * Secure authentication and input validation.
 
 ---
 
-### 🟣 **V.0.3 – Frontend Development**
+### 🟣 **V.0.4 – Frontend Development**
 
 * Responsive UI for both desktop and mobile.
 
 ---
 
-### 🔴 **V.0.4 – Security (Authentication & Authorization)**
+### 🔴 **V.0.5 – Security (Authentication & Authorization)**
 
 * User registration, login/logout, and password reset.
 * Role-based access control: **Reader**, **Author/Editor**, **Admin**.
@@ -275,4 +275,5 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 * Being Developed with ❤️ using Java, Spring Boot, and Agile principles.*
 
 ```
+
 
