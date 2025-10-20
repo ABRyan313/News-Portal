@@ -17,6 +17,8 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
     boolean existsBySlug(String slug);
     Page<ArticleEntity> findAllByPublishedIsTrue(Pageable pageable);
 
+    Page<ArticleEntity> findAllByCategoryId(Long categoryId, Pageable pageable);
+
 
     List<ArticleEntity> findByStatus(Status status);
 

@@ -16,9 +16,9 @@ public class ArticleMapper {
         return article;
     }
 
-    public ArticleEntity createRequestToEntity(CreateArticleRequest post) {
+    public ArticleEntity createRequestToEntity(CreateArticleRequest article) {
         ArticleEntity entity = new ArticleEntity();
-        BeanUtils.copyProperties(post, entity);
+        BeanUtils.copyProperties(article, entity);
         return entity;
     }
 
@@ -26,5 +26,17 @@ public class ArticleMapper {
         entity.setArticle(articles.article());
         entity.setPublished(articles.published());
         return entity;
+    }
+
+    public Article toDto(Article article) {
+        if (article == null) {
+            return null;
+        }
+        Article dto = new Article();
+        dto.setId(article.getId());
+        dto.setTitle(article.getTitle());
+        dto.setSlug(article.getSlug());
+        dto.setSummary(article.getSummary());
+        return dto;
     }
 }

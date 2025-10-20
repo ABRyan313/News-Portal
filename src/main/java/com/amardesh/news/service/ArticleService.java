@@ -30,6 +30,11 @@ public class ArticleService {
         return entityList.stream().map(articleMapper::entityToDomain).toList();
     }
 
+    public Page<Article> getArticlesByCategoryId(Long categoryId, Pageable pageable) {
+        return articleRepository.findAllByCategoryId(categoryId, pageable)
+                .map(articleMapper::entityToDomain);
+    }
+
 
     public Page<Article> getAllPublishedArticle(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "publishedAt"));
@@ -95,12 +100,12 @@ public class ArticleService {
 
     private ArticleEntity findEntityById(Long id) throws ChangeSetPersister.NotFoundException {
         return articleRepository.findById(id)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException("Post not found"));
+                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
     }
 
     public ArticleEntity findEntityBySlug(String slug) throws ChangeSetPersister.NotFoundException {
         return articleRepository.findBySlug(slug)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException("Post not found with slug: " + slug));
+                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
     }
 
 
