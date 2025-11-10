@@ -1,7 +1,10 @@
 package com.amardesh.news.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Base64;
 
+@Component
 public class CategoryUtils {
 
     public String getUniqueSlug(String Category_title) {

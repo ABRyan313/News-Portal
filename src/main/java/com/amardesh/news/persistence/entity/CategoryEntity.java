@@ -3,10 +3,8 @@ package com.amardesh.news.persistence.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -24,13 +22,4 @@ public class CategoryEntity {
 
         @Column(nullable = false, unique = true)
         private String slug;
-
-        @Column(length = 1000)
-        private String description;
-
-        @CreationTimestamp
-        private LocalDateTime createdAt;
-
-        @UpdateTimestamp
-        private LocalDateTime updatedAt;
     }
