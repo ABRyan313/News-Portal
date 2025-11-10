@@ -6,50 +6,71 @@ import com.amardesh.news.model.dto.UpdateArticleRequest;
 import com.amardesh.news.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Tag(name = "Article Resource", description = "API for managing articles")
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("api/articles")
+@RequestMapping("/api/articles")
+@RequiredArgsConstructor
 public class ArticleRestController {
 
     private final ArticleService articleService;
 
-    @GetMapping
-    public List<Article> getAllArticle(@ParameterObject Pageable pageable) {
-        return articleService.getAllArticle(pageable);
-    }
-
-    @Operation(summary = "Create a new article")
     @PostMapping
-    public void createArticle(@Valid @RequestBody CreateArticleRequest createPostRequest) {
-        articleService.create(createPostRequest);
+    @Operation(summary = "Create a new article")
+    public ResponseEntity<Long> create(@RequestBody CreateArticleRequest request) {
+        Long id = articleService.create(request);
+        return ResponseEntity.status(201).body(id); // 201 Created
     }
 
-    @Operation(summary = "Update the article by id")
-    @PutMapping("{id}")
-    public void updateArticle(@PathVariable Long id,@Valid @RequestBody UpdateArticleRequest request) throws ChangeSetPersister.NotFoundException {
+    @GetMapping("/{id}")
+    @Operation(summary = "Get article by ID")
+    public ResponseEntity<Article> getById(@PathVariable Long id) {
+        Article article = articleService.getById(id);
+        return ResponseEntity.ok(article); // 200 OK
+    }
+
+    @GetMapping("/slug/{slug}")
+    @Operation(summary = "Get article by slug")
+    public ResponseEntity<Article> getBySlug(@PathVariable String slug) throws ChangeSetPersister.NotFoundException {
+        Article article = articleService.getBySlug(slug);
+        return ResponseEntity.ok(article);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an article by ID")
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody UpdateArticleRequest request) {
         articleService.update(id, request);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    @Operation(summary = "Delete the article by id")
-    @DeleteMapping("{id}")
-    public void deleteArticle(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete an article by ID")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         articleService.delete(id);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    @Operation(summary = "Get the article by id")
-    @GetMapping("{id}")
-    public Article getArticleById(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
-        return articleService.getById(id);
+    @PatchMapping("/{articleId}/category/{categoryId}")
+    @Operation(summary = "Assign category to an article")
+    public ResponseEntity<Void> assignCategory(@PathVariable Long articleId, @PathVariable Long categoryId) {
+        articleService.assignCategory(articleId, categoryId);
+        return ResponseEntity.ok().build(); // 200 OK
+    }
+
+    @GetMapping("/category/{categoryId}")
+    @Operation(summary = "Get articles by category ID (paginated)")
+    public ResponseEntity<Page<Article>> getByCategory(@PathVariable Long categoryId,
+                                                       @PageableDefault(size = 10) Pageable pageable) {
+        Page<Article> page = articleService.getArticlesByCategoryId(categoryId, pageable);
+        return ResponseEntity.ok(page);
     }
 }

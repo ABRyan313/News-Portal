@@ -8,8 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -48,15 +46,8 @@ public class ArticleEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = true) // make nullable if category optional
     private CategoryEntity category;
 
-    @ManyToMany
-    @JoinTable(
-            name = "article_tags",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<TagEntity> tags = new HashSet<>();
 }

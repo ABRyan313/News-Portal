@@ -33,10 +33,7 @@ public class ArticleMapper {
             return null;
         }
         Article dto = new Article();
-        dto.setId(article.getId());
-        dto.setTitle(article.getTitle());
-        dto.setSlug(article.getSlug());
-        dto.setSummary(article.getSummary());
+        BeanUtils.copyProperties(article, dto);
         return dto;
     }
 }
