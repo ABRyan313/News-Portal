@@ -27,11 +27,6 @@ public class CategoryRestController {
         return categoryService.create(request);
     }
 
-    @Operation(summary = "Get all categories with pagination")
-    @GetMapping
-    public List<Category> getAll(@PageableDefault(size = 10) Pageable pageable) {
-        return categoryService.getAllCategory(pageable);
-    }
 
     @Operation(summary = "Get category by ID")
     @GetMapping("/{id}")

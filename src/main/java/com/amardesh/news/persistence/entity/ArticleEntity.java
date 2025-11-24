@@ -3,6 +3,7 @@ package com.amardesh.news.persistence.entity;
 import com.amardesh.news.model.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "articles", uniqueConstraints = {
         @UniqueConstraint(columnNames = "slug")}
