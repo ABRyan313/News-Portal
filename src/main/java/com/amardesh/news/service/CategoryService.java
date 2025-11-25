@@ -7,7 +7,6 @@ import com.amardesh.news.persistence.entity.CategoryEntity;
 import com.amardesh.news.persistence.repository.CategoryRepository;
 import com.amardesh.news.utils.CategoryUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,8 +34,8 @@ public class CategoryService {
         return savedEntity.getId();
     }
 
-    public List<Category> getAllCategory(Pageable pageable) {
-        var entityList = categoryRepository.findAll(pageable).getContent();
+    public List<Category> getAllCategory() {
+        List<CategoryEntity> entityList = categoryRepository.findAll();
         return entityList.stream()
                 .map(categoryMapper::entityToDomain)
                 .toList();
@@ -63,8 +62,8 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    private CategoryEntity findEntityById(Long id) {
-        return categoryRepository.findById(id)
+    private void findEntityById(Long id) {
+        categoryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + id));
     }
 }

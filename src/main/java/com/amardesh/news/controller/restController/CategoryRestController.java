@@ -6,8 +6,6 @@ import com.amardesh.news.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,11 +25,16 @@ public class CategoryRestController {
         return categoryService.create(request);
     }
 
-
     @Operation(summary = "Get category by ID")
     @GetMapping("/{id}")
     public Category getById(@PathVariable Long id) throws Exception {
         return categoryService.getCategoryById(id);
+    }
+
+    @Operation(summary = "Get all categories")
+    @GetMapping()
+    public List<Category> getAllCategories(){
+        return categoryService.getAllCategory();
     }
 
     @Operation(summary = "Get category by slug")
