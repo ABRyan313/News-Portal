@@ -20,7 +20,8 @@ public record CreateArticleRequest(
         @NotNull(message = "Published status is required")
         Boolean published,
 
-        Category category
+        @NotNull(message = "categoryId is required")
+        Long categoryId
 
 ) {
 }

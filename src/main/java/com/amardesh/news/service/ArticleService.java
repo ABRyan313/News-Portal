@@ -7,7 +7,7 @@ import com.amardesh.news.model.dto.UpdateArticleRequest;
 import com.amardesh.news.persistence.entity.ArticleEntity;
 import com.amardesh.news.persistence.repository.ArticleRepository;
 import com.amardesh.news.persistence.repository.CategoryRepository;
-import com.amardesh.news.utils.ArticleUtils;
+import com.amardesh.news.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
     private final CategoryRepository categoryRepository;
-    private final ArticleUtils articleUtils;
+    private final Utils utils;
 
     public List<Article> getAllArticles(Pageable pageable) {
         List<ArticleEntity> entityList = articleRepository.findAll(pageable).getContent();
@@ -51,30 +51,26 @@ public class ArticleService {
 
 
     public Long create(CreateArticleRequest request) {
-        var entityToSave = articleMapper.createRequestToEntity(request);
-        entityToSave.setSummary(generateSummary(entityToSave.getArticle()));
 
-        var title = request.title();
+        var entity = articleMapper.createRequestToEntity(request);
 
-        String slug = articleUtils.getUniqueSlug(title);
+        // set summary
+        entity.setSummary(generateSummary(entity.getArticle()));
 
-        while (articleRepository.existsBySlug(slug)) {
-            slug = articleUtils.getUniqueSlug(title);
-        }
-        entityToSave.setSlug(slug);
+        // assign category
+        var category = categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new NoSuchElementException("Category not found: " + request.categoryId()));
+        entity.setCategory(category);
 
-        var savedEntity = articleRepository.save(entityToSave);
-        return savedEntity.getId();
+        // Generate slug using utility class
+        String baseSlug = utils.slugify(request.title());
+        String uniqueSlug = utils.makeUnique(baseSlug, articleRepository::existsBySlug);
+        entity.setSlug(uniqueSlug);
+
+        // Save
+        var saved = articleRepository.save(entity);
+        return saved.getId();
     }
-
-    public void assignCategory(Long articleId, Long categoryId) {
-        var articleEntity = findEntityById(articleId);
-        var categoryEntity = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + categoryId));
-        articleEntity.setCategory(categoryEntity);
-        articleRepository.save(articleEntity);
-    }
-
 
     public Article getById(Long id) {
         var articleEntity = this.findEntityById(id);
