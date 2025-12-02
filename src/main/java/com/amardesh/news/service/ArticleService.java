@@ -7,7 +7,7 @@ import com.amardesh.news.model.dto.UpdateArticleRequest;
 import com.amardesh.news.persistence.entity.ArticleEntity;
 import com.amardesh.news.persistence.repository.ArticleRepository;
 import com.amardesh.news.persistence.repository.CategoryRepository;
-import com.amardesh.news.utils.Utils;
+import com.amardesh.news.utils.SlugUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
     private final CategoryRepository categoryRepository;
-    private final Utils utils;
+    private final SlugUtils slugUtils;
 
     public List<Article> getAllArticles(Pageable pageable) {
         List<ArticleEntity> entityList = articleRepository.findAll(pageable).getContent();
@@ -63,8 +63,8 @@ public class ArticleService {
         entity.setCategory(category);
 
         // Generate slug using utility class
-        String baseSlug = utils.slugify(request.title());
-        String uniqueSlug = utils.makeUnique(baseSlug, articleRepository::existsBySlug);
+        String baseSlug = slugUtils.slugify(request.title());
+        String uniqueSlug = slugUtils.makeUnique(baseSlug, articleRepository::existsBySlug);
         entity.setSlug(uniqueSlug);
 
         // Save
@@ -84,13 +84,22 @@ public class ArticleService {
 
     public void update(Long id, UpdateArticleRequest request) {
         ArticleEntity articleEntity = this.findEntityById(id);
-        ArticleEntity updatedArticleEntity = articleMapper.updateRequestToEntity(request, articleEntity);
-        updatedArticleEntity.setSummary(generateSummary(updatedArticleEntity.getArticle()));
+        articleMapper.updateRequestToEntity(request, articleEntity);
 
-        updatedArticleEntity.setUpdatedAt(LocalDateTime.now());
+        // regenerate summary
+        articleEntity.setSummary(generateSummary(articleEntity.getArticle()));
 
-        articleRepository.save(updatedArticleEntity);
+        // regenerate slug only if title changed
+        if (!articleEntity.getTitle().equals(request.title())) {
+            String baseSlug = slugUtils.slugify(request.title());
+            String uniqueSlug = slugUtils.makeUnique(baseSlug, articleRepository::existsBySlug);
+            articleEntity.setSlug(uniqueSlug);
+        }
+
+        articleEntity.setUpdatedAt(LocalDateTime.now());
+        articleRepository.save(articleEntity);
     }
+
 
     public void delete(Long id) {
         this.findEntityById(id);

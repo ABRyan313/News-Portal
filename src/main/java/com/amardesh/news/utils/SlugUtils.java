@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.function.Predicate;
 
 @Component
-public class Utils {
+public class SlugUtils {
 
     /**
      * Convert a title into a clean slug.

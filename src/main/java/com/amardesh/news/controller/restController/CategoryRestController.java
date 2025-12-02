@@ -2,10 +2,12 @@ package com.amardesh.news.controller.restController;
 
 import com.amardesh.news.model.domain.Category;
 import com.amardesh.news.model.dto.CreateCategoryRequest;
+import com.amardesh.news.model.dto.UpdateCategoryRequest;
 import com.amardesh.news.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +25,13 @@ public class CategoryRestController {
     @PostMapping
     public Long create(@RequestBody CreateCategoryRequest request) {
         return categoryService.create(request);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update an Category by ID")
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody UpdateCategoryRequest request) {
+        categoryService.update(id, request);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 
     @Operation(summary = "Get category by ID")

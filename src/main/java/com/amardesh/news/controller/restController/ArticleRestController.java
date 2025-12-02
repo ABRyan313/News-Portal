@@ -59,12 +59,6 @@ public class ArticleRestController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    @PatchMapping("/{articleId}/category/{categoryId}")
-    @Operation(summary = "Assign category to an article")
-    public ResponseEntity<Void> assignCategory(@PathVariable Long articleId, @PathVariable Long categoryId) {
-        articleService.assignCategory(articleId, categoryId);
-        return ResponseEntity.ok().build(); // 200 OK
-    }
 
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "Get articles by category ID (paginated)")
