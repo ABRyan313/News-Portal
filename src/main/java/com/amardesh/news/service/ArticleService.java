@@ -54,6 +54,10 @@ public class ArticleService {
 
         var entity = articleMapper.createRequestToEntity(request);
 
+        if (request.published()) {
+            entity.setPublishedAt(LocalDateTime.now());
+        }
+
         // set summary
         entity.setSummary(generateSummary(entity.getArticle()));
 

@@ -41,9 +41,10 @@ public class ArticleEntity {
     @Column(name = "is_published")
     private Boolean published;
 
-
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    private LocalDateTime publishedAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
@@ -51,5 +52,17 @@ public class ArticleEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = true) // make nullable if category optional
     private CategoryEntity category;
+
+    /**
+     * Auto–set publishedAt WHEN published = true
+     * Works for both create & update.
+     */
+    @PrePersist
+    @PreUpdate
+    public void handlePublishTimestamp() {
+        if (Boolean.TRUE.equals(published) && publishedAt == null) {
+            publishedAt = LocalDateTime.now();
+        }
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.amardesh.news.mapper;
 
 import com.amardesh.news.model.domain.Article;
+import com.amardesh.news.model.domain.Category;
 import com.amardesh.news.model.dto.CreateArticleRequest;
 import com.amardesh.news.model.dto.UpdateArticleRequest;
 import com.amardesh.news.persistence.entity.ArticleEntity;
@@ -10,30 +11,45 @@ import org.springframework.stereotype.Component;
 @Component
 public class ArticleMapper {
 
+    /** ENTITY → DOMAIN (DTO used for API response) */
     public Article entityToDomain(ArticleEntity entity) {
-        Article article = new Article();
-        BeanUtils.copyProperties(entity, article);
-        return article;
-    }
-
-    public ArticleEntity createRequestToEntity(CreateArticleRequest article) {
-        ArticleEntity entity = new ArticleEntity();
-        BeanUtils.copyProperties(article, entity);
-        return entity;
-    }
-
-    public ArticleEntity updateRequestToEntity(UpdateArticleRequest articles, ArticleEntity entity) {
-        entity.setArticle(articles.article());
-        entity.setPublished(articles.published());
-        return entity;
-    }
-
-    public Article toDto(Article article) {
-        if (article == null) {
+        if (entity == null) {
             return null;
         }
+
         Article dto = new Article();
-        BeanUtils.copyProperties(article, dto);
+        BeanUtils.copyProperties(entity, dto);
+
+        // Manually map category (BeanUtils will NOT map nested objects)
+        if (entity.getCategory() != null) {
+            Category categoryDto = new Category();
+            categoryDto.setId(entity.getCategory().getId());
+            categoryDto.setName(entity.getCategory().getName());
+            categoryDto.setSlug(entity.getCategory().getSlug());
+
+            dto.setCategory(categoryDto);
+        }
+
         return dto;
     }
+
+
+    /** CREATE REQUEST → ENTITY */
+    public ArticleEntity createRequestToEntity(CreateArticleRequest request) {
+        ArticleEntity entity = new ArticleEntity();
+        BeanUtils.copyProperties(request, entity);
+
+        // categoryId is not mapped here (we set it in service)
+        return entity;
+    }
+
+
+    /** UPDATE REQUEST → ENTITY (only selected fields) */
+    public void updateRequestToEntity(UpdateArticleRequest request, ArticleEntity entity) {
+        entity.setArticle(request.article());
+        entity.setPublished(request.published());
+
+        // publishedAt will be auto-set using @PreUpdate if needed
+    }
+
 }
