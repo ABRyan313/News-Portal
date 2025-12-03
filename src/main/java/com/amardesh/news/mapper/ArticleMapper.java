@@ -47,6 +47,7 @@ public class ArticleMapper {
     /** UPDATE REQUEST → ENTITY (only selected fields) */
     public void updateRequestToEntity(UpdateArticleRequest request, ArticleEntity entity) {
         entity.setArticle(request.article());
+        entity.setTitle(request.title());
         entity.setPublished(request.published());
 
         // publishedAt will be auto-set using @PreUpdate if needed
