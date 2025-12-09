@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Article Resource", description = "API for managing articles")
 @RestController
-@RequestMapping("/api/articles")
+@RequestMapping("/articles")
 @RequiredArgsConstructor
 public class ArticleRestController {
 
