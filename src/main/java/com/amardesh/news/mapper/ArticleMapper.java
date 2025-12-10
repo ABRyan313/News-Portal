@@ -2,11 +2,16 @@ package com.amardesh.news.mapper;
 
 import com.amardesh.news.model.domain.Article;
 import com.amardesh.news.model.domain.Category;
+import com.amardesh.news.model.domain.Tag;
 import com.amardesh.news.model.dto.CreateArticleRequest;
 import com.amardesh.news.model.dto.UpdateArticleRequest;
 import com.amardesh.news.persistence.entity.ArticleEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class ArticleMapper {
@@ -30,9 +35,24 @@ public class ArticleMapper {
             dto.setCategory(categoryDto);
         }
 
+        // --- TAG MAPPING ---
+        if (entity.getTags() != null && !entity.getTags().isEmpty()) {
+            Set<Tag> tagDtos = entity.getTags()
+                    .stream()
+                    .map(tag -> new Tag(
+                            tag.getId(),
+                            tag.getName(),
+                            tag.getSlug()
+                    ))
+                    .collect(Collectors.toSet());
+
+            dto.setTags(tagDtos);
+        } else {
+            dto.setTags(Collections.emptySet());
+        }
+
         return dto;
     }
-
 
     /** CREATE REQUEST → ENTITY */
     public ArticleEntity createRequestToEntity(CreateArticleRequest request) {
@@ -43,7 +63,6 @@ public class ArticleMapper {
         return entity;
     }
 
-
     /** UPDATE REQUEST → ENTITY (only selected fields) */
     public void updateRequestToEntity(UpdateArticleRequest request, ArticleEntity entity) {
         entity.setArticle(request.article());
@@ -52,5 +71,4 @@ public class ArticleMapper {
 
         // publishedAt will be auto-set using @PreUpdate if needed
     }
-
 }

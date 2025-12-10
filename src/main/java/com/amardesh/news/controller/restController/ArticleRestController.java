@@ -1,6 +1,7 @@
 package com.amardesh.news.controller.restController;
 
 import com.amardesh.news.model.domain.Article;
+import com.amardesh.news.model.dto.AddTagRequest;
 import com.amardesh.news.model.dto.CreateArticleRequest;
 import com.amardesh.news.model.dto.UpdateArticleRequest;
 import com.amardesh.news.service.ArticleService;
@@ -66,5 +67,23 @@ public class ArticleRestController {
                                                        @PageableDefault(size = 10) Pageable pageable) {
         Page<Article> page = articleService.getArticlesByCategoryId(categoryId, pageable);
         return ResponseEntity.ok(page);
+    }
+
+    @Operation(summary = "Add Tag")
+    @PostMapping("/{id}/add-tag")
+    public ResponseEntity<?> addTag(
+            @PathVariable Long id,
+            @RequestBody AddTagRequest request) {
+        articleService.addTagToArticle(id, request.tagId());
+        return ResponseEntity.ok("Tag added");
+    }
+
+    @Operation(summary = "Delete tag")
+    @DeleteMapping("/{id}/remove-tag/{tagId}")
+    public ResponseEntity<?> removeTag(
+            @PathVariable Long id,
+            @PathVariable Long tagId) {
+        articleService.removeTagFromArticle(id, tagId);
+        return ResponseEntity.ok("Tag removed");
     }
 }

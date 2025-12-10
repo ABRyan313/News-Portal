@@ -6,6 +6,8 @@ import com.amardesh.news.persistence.entity.ArticleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,20 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 
     Page<ArticleEntity> findAllByPublishedIsTrue(Pageable pageable);
     Page<ArticleEntity> findAllByCategoryId(Long categoryId, Pageable pageable);
+
+    @Query("""
+       SELECT a 
+       FROM ArticleEntity a 
+       JOIN a.tags t 
+       WHERE t.name = :tagName 
+         AND a.status = :status
+       """)
+    Page<ArticleEntity> findByTagNameAndStatus(
+            @Param("tagName") String tagName,
+            @Param("status") Status status,
+            Pageable pageable
+    );
+
 
     List<ArticleEntity> findByStatus(Status status);
 //    List<ArticleEntity> findByStatusOrderByCreatedAtDesc(Status status);

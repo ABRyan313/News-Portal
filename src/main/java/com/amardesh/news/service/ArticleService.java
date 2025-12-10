@@ -5,20 +5,26 @@ import com.amardesh.news.model.domain.Article;
 import com.amardesh.news.model.dto.CreateArticleRequest;
 import com.amardesh.news.model.dto.UpdateArticleRequest;
 import com.amardesh.news.persistence.entity.ArticleEntity;
+import com.amardesh.news.persistence.entity.TagEntity;
 import com.amardesh.news.persistence.repository.ArticleRepository;
 import com.amardesh.news.persistence.repository.CategoryRepository;
+import com.amardesh.news.persistence.repository.TagRepository;
 import com.amardesh.news.utils.SlugUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +34,7 @@ public class ArticleService {
     private final ArticleMapper articleMapper;
     private final CategoryRepository categoryRepository;
     private final SlugUtils slugUtils;
+    private final TagRepository tagRepository;
 
     public List<Article> getAllArticles(Pageable pageable) {
         List<ArticleEntity> entityList = articleRepository.findAll(pageable).getContent();
@@ -48,7 +55,6 @@ public class ArticleService {
         var entityPage = articleRepository.findAllByPublishedIsTrue(pageable);
         return entityPage.map(articleMapper::entityToDomain);
     }
-
 
     public Long create(CreateArticleRequest request) {
 
@@ -87,14 +93,14 @@ public class ArticleService {
     }
 
     public void update(Long id, UpdateArticleRequest request) {
+
         ArticleEntity articleEntity = this.findEntityById(id);
+
+        String oldTitle = articleEntity.getTitle(); // capture before update
+
         articleMapper.updateRequestToEntity(request, articleEntity);
 
-        // regenerate summary
-        articleEntity.setSummary(generateSummary(articleEntity.getArticle()));
-
-        // regenerate slug only if title changed
-        if (!articleEntity.getTitle().equals(request.title())) {
+        if (!Objects.equals(oldTitle, request.title())) {
             String baseSlug = slugUtils.slugify(request.title());
             String uniqueSlug = slugUtils.makeUnique(baseSlug, articleRepository::existsBySlug);
             articleEntity.setSlug(uniqueSlug);
@@ -103,7 +109,6 @@ public class ArticleService {
         articleEntity.setUpdatedAt(LocalDateTime.now());
         articleRepository.save(articleEntity);
     }
-
 
     public void delete(Long id) {
         this.findEntityById(id);
@@ -119,6 +124,35 @@ public class ArticleService {
         return articleRepository.findBySlug(slug)
                 .orElseThrow(() -> new NoSuchElementException("Article not found with id: " + slug));
 
+    }
+
+    @Transactional
+    public void addTagToArticle(Long articleId, Long tagId) {
+
+        ArticleEntity article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"));
+
+        TagEntity tag = tagRepository.findById(tagId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tag not found"));
+
+        article.getTags().add(tag);
+        tag.getArticles().add(article);
+
+        articleRepository.save(article);
+    }
+
+    @Transactional
+    public void removeTagFromArticle(Long articleId, Long tagId) {
+
+        ArticleEntity article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new NoSuchElementException("Article not found"));
+
+        TagEntity tag = tagRepository.findById(tagId)
+                .orElseThrow(() -> new NoSuchElementException("Tag not found"));
+
+        article.getTags().remove(tag);
+
+        articleRepository.save(article);
     }
 
     private String generateSummary(String content) {

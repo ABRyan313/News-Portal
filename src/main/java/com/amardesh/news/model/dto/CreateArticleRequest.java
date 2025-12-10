@@ -1,6 +1,5 @@
 package com.amardesh.news.model.dto;
 
-import com.amardesh.news.model.domain.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

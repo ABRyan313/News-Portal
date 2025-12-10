@@ -3,6 +3,8 @@ package com.amardesh.news.model.domain;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,4 +22,5 @@ public class Article {
     private Boolean published;
     private LocalDateTime publishedAt;
     private String summary;
+    private Set<Tag> tags = new HashSet<>();
 }
